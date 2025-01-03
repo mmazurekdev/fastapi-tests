@@ -7,7 +7,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.pool import NullPool as SQLAlchemyNullPool
 
-from src.repository.base import Base
+from src.repository.table import Base
 from src.repository.database import async_db
 
 config = context.config
