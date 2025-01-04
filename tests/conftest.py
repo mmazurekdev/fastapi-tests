@@ -1,31 +1,31 @@
-import asgi_lifespan
-import fastapi
-import httpx
 import pytest
+import pytest_asyncio
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
 
-from src.main import initialize_backend_application
-
-
-@pytest.fixture(name="backend_test_app")
-def backend_test_app() -> fastapi.FastAPI:
-    """
-    A fixture that re-initializes the FastAPI instance for test application.
-    """
-
-    return initialize_backend_application()
+from api.dependencies.session import get_async_session
+from main import backend_app
+from src.repository.table import Base
 
 
-@pytest.fixture(name="initialize_backend_test_application")
-async def initialize_backend_test_application(backend_test_app: fastapi.FastAPI) -> fastapi.FastAPI:  # type: ignore
-    async with asgi_lifespan.LifespanManager(backend_test_app):
-        yield backend_test_app
+@pytest_asyncio.fixture(autouse=True)
+@pytest.mark.asyncio
+async def override_database():
+    SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
+    engine = create_async_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+    TestingSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, autoflush=False)
 
+    async def override_get_db():
+        async with TestingSessionLocal() as session:
+            yield session
 
-@pytest.fixture(name="async_client")
-async def async_client(initialize_backend_test_application: fastapi.FastAPI) -> httpx.AsyncClient:  # type: ignore
-    async with httpx.AsyncClient(
-        app=initialize_backend_test_application,
-        base_url="http://testserver",
-        headers={"Content-Type": "application/json"},
-    ) as client:
-        yield client
+    backend_app.dependency_overrides[get_async_session] = override_get_db
+
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    yield
+
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+
