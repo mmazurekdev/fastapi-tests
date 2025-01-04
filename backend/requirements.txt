@@ -29,3 +29,5 @@ trio
 uvicorn
 pydantic-settings
 black
+pytest-asyncio
+aiosqlite

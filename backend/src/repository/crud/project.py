@@ -40,7 +40,7 @@ class ProjectCRUDRepository(BaseCRUDRepository):
             raise EntityDoesNotExist(f"Project with id `{id}` does not exist!")
 
     async def update_project_by_id(
-        self, id: int, project_update: UpdateProjectSchema
+            self, id: int, project_update: UpdateProjectSchema
     ) -> Project:
         new_project_data = project_update.model_dump()
 

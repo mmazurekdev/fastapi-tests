@@ -8,6 +8,7 @@ from src.repository.database import async_db
 
 
 async def get_async_session() -> typing.AsyncGenerator[SQLAlchemyAsyncSession, None]:
+    print("SESSION GET")
     try:
         yield async_db.async_session
     except Exception as e:
