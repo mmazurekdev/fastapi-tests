@@ -1,4 +1,4 @@
-# Test Flask APP.
+# Test FastAPI APP.
 
 ## Stack
 FastAPI + SqlAlchemy + Postgres + async support.
