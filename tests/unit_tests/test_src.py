@@ -13,4 +13,3 @@ def test_application_is_fastapi_instance() -> None:
     assert backend_app.redoc_url == "/redoc"
     assert backend_app.docs_url == "/docs"
     assert backend_app.openapi_url == "/openapi.json"
-    assert backend_app.redoc_url == "/redoc"
