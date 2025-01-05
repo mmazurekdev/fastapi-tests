@@ -13,7 +13,7 @@ Copy file .env.example to .env and run:
 
 `docker-compose run -p 8000:8000 backend_app` 
 
-It should run two services: postgres and this app. 
+It should run two services: postgres and this app. There is one extra service (db_editor).
 
 ## Use
 
