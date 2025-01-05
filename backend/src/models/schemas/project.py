@@ -1,8 +1,8 @@
 import datetime
-from typing import Annotated
+from typing import Annotated, Optional
 
 from annotated_types import Len
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 
 class Geometry(BaseModel):
@@ -19,10 +19,16 @@ class GeoFile(BaseModel):
 
 class CreateProjectSchema(BaseModel):
     name: str
-    description: str
+    description: Optional[str] = ""
     date_range_from: datetime.datetime
     date_range_to: datetime.datetime
     geo_file: GeoFile
+
+    @model_validator(mode="after")
+    def check_field_relationship(cls, model):
+        if model.date_range_to < model.date_range_from:
+            raise ValueError("date_range_to cannot be smaller than date_range_from")
+        return model
 
 
 class UpdateProjectSchema(CreateProjectSchema): ...

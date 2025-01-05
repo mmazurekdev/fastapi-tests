@@ -3,7 +3,7 @@ import pathlib
 
 import decouple
 import pydantic_settings
-from pydantic import ConfigDict
+from pydantic_settings import SettingsConfigDict
 
 ROOT_DIR: pathlib.Path = pathlib.Path(
     __file__
@@ -16,6 +16,7 @@ class BackendBaseSettings(pydantic_settings.BaseSettings):
     TIMEZONE: str = "UTC"
     DESCRIPTION: str | None = None
     DEBUG: bool = False
+    ENVIRONMENT: str = ""
 
     SERVER_HOST: str = decouple.config("BACKEND_SERVER_HOST", cast=str)  # type: ignore
     SERVER_PORT: int = decouple.config("BACKEND_SERVER_PORT", cast=int)  # type: ignore
@@ -60,12 +61,12 @@ class BackendBaseSettings(pydantic_settings.BaseSettings):
     LOGGING_LEVEL: int = logging.INFO
     LOGGERS: tuple[str, str] = ("uvicorn.asgi", "uvicorn.access")
 
-    model_config = ConfigDict(
-        env_file=f"{str(ROOT_DIR)}/.env", case_sensitive=True, extra="allow"
+    model_config = SettingsConfigDict(
+        env_file=f"{str(ROOT_DIR)}/.env", case_sensitive=True, extra="ignore"
     )
 
     @property
-    def set_backend_app_attributes(self) -> dict[str, str | bool | None]:
+    def get_backend_app_attributes(self) -> dict[str, str | bool | None]:
         """
         Set all `FastAPI` class' attributes with the custom values defined in `BackendBaseSettings`.
         """

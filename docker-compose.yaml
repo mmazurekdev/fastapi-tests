@@ -61,7 +61,6 @@ services:
       - IS_DB_FORCE_ROLLBACK=${IS_DB_FORCE_ROLLBACK}
       - IS_ALLOWED_CREDENTIALS=${IS_ALLOWED_CREDENTIALS}
       - API_TOKEN=${API_TOKEN}
-      - AUTH_TOKEN=${AUTH_TOKEN}
     volumes:
       - ./backend/:/usr/backend/
     expose:

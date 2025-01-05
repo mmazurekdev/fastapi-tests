@@ -12,8 +12,12 @@ from src.repository.table import Base
 @pytest.mark.asyncio
 async def override_database():
     SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
-    engine = create_async_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-    TestingSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, autoflush=False)
+    engine = create_async_engine(
+        SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    )
+    TestingSessionLocal = sessionmaker(
+        bind=engine, class_=AsyncSession, autoflush=False
+    )
 
     async def override_get_db():
         async with TestingSessionLocal() as session:
@@ -28,4 +32,3 @@ async def override_database():
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-

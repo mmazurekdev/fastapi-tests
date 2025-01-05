@@ -6,11 +6,11 @@ from sqlalchemy.sql import functions as sqlalchemy_functions
 
 from src.models.db.project import Project
 from src.models.schemas.project import UpdateProjectSchema, CreateProjectSchema
-from src.repository.crud.base import BaseCRUDRepository
+from src.repository.crud.base import BaseRepository
 from src.utilities.exceptions.database import EntityDoesNotExist
 
 
-class ProjectCRUDRepository(BaseCRUDRepository):
+class ProjectRepository(BaseRepository):
     async def create_project(self, project_create: CreateProjectSchema) -> Project:
         new_project = Project(
             name=project_create.name,
@@ -40,7 +40,7 @@ class ProjectCRUDRepository(BaseCRUDRepository):
             raise EntityDoesNotExist(f"Project with id `{id}` does not exist!")
 
     async def update_project_by_id(
-            self, id: int, project_update: UpdateProjectSchema
+        self, id: int, project_update: UpdateProjectSchema
     ) -> Project:
         new_project_data = project_update.model_dump()
 
